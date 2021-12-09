@@ -5,6 +5,7 @@
     <mat-label>Search for a title that interests you</mat-label>
     <input matInput
            [(ngModel)]="searchText"
+           [disabled]="!isInitLoadCompleted"
            (keyup)="onSearchFieldChange()">
   </mat-form-field>
 </div>
@@ -31,7 +32,7 @@
     <mat-paginator [length]="dataSource.totalStories"
                    [pageSize]="pageSize"
                    [pageIndex]="pageIndex"
-                   [pageSizeOptions]="[15, 35, 100, 200]"
+                   [pageSizeOptions]="[15, 30, 100, 200]"
                    (page)="onPageChange($event)"
                    aria-label="Select page"
                    showFirstLastButtons>

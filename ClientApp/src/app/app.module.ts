@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -15,6 +15,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ErrorInterceptor } from './utilities/error-interceptor';
 
 @NgModule({
   declarations: [AppComponent, StoryComponent],
@@ -34,8 +36,15 @@ import { MatInputModule } from '@angular/material/input';
     MatProgressBarModule,
     MatCardModule,
     MatInputModule,
+    MatSnackBarModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

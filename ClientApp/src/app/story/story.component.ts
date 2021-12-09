@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { map, tap } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { StoryData } from '../models/story-data';
 import { StoryService } from '../services/story.service';
 
@@ -14,24 +14,31 @@ export class StoryComponent implements OnInit {
   displayedColumns = ['stories'];
   totalStories = 0;
   pageIndex = 0;
-  pageSize = 35;
+  pageSize = 30;
   searchText = '';
   isInitLoadCompleted = false;
   isLoading = true;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private storyService: StoryService) {
+  constructor(
+    private storyService: StoryService,
+    private snackBar: MatSnackBar
+  ) {
     this.storyService
-      .getStories(this.pageIndex, this.pageSize)
-      .pipe(
-        map((storyData: StoryData) => {
-          this.dataSource = storyData;
+      .getStories(this.pageIndex, this.pageSize, this.searchText)
+      .subscribe(
+        (response: StoryData) => {
+          this.dataSource = response;
           this.isInitLoadCompleted = true;
           this.isLoading = false;
-        })
-      )
-      .subscribe();
+        },
+        (error: StoryData) => {
+          error.errors.forEach((error) => {
+            this.snackBar.open(error, 'Close', { duration: 5000 });
+          });
+        }
+      );
   }
 
   ngOnInit(): void {}
@@ -44,13 +51,18 @@ export class StoryComponent implements OnInit {
 
     this.storyService
       .getStories(this.pageIndex, this.pageSize, this.searchText)
-      .pipe(
-        map((storyData: StoryData) => {
-          this.dataSource = storyData;
+      .subscribe(
+        (response: StoryData) => {
+          this.dataSource = response;
+          this.isInitLoadCompleted = true;
           this.isLoading = false;
-        })
-      )
-      .subscribe();
+        },
+        (error: StoryData) => {
+          error.errors.forEach((error) => {
+            this.snackBar.open(error, 'Close', { duration: 5000 });
+          });
+        }
+      );
   }
 
   onPageChange(event: PageEvent): void {
@@ -60,13 +72,18 @@ export class StoryComponent implements OnInit {
     this.pageSize = event.pageSize;
 
     this.storyService
-      .getStories(event.pageIndex, event.pageSize, this.searchText)
-      .pipe(
-        map((storyData: StoryData) => {
-          this.dataSource = storyData;
+      .getStories(this.pageIndex, this.pageSize, this.searchText)
+      .subscribe(
+        (response: StoryData) => {
+          this.dataSource = response;
+          this.isInitLoadCompleted = true;
           this.isLoading = false;
-        })
-      )
-      .subscribe();
+        },
+        (error: StoryData) => {
+          error.errors.forEach((error) => {
+            this.snackBar.open(error, 'Close', { duration: 5000 });
+          });
+        }
+      );
   }
 }
