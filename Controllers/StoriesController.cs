@@ -33,6 +33,8 @@ namespace HackerNews.Controllers
     [HttpGet]
     public async Task<IActionResult> GetNewestStories(int pageIndex, int pageSize, string? title = "")
     {
+      var storyData = new StoryData();
+
       HttpResponseMessage response = await client.GetAsync(newestStoriesBaseUrl);
       try
       {
@@ -40,7 +42,10 @@ namespace HackerNews.Controllers
 
         IEnumerable<int> storyIds = JsonSerializer.Deserialize<IEnumerable<int>>(await response.Content.ReadAsStringAsync());
 
-        StoryData storyData = await BuildStoryDataFromIds(storyIds, pageIndex, pageSize, title);
+        if (storyIds.Any())
+        {
+          storyData = await BuildStoryDataFromIds(storyIds, pageIndex, pageSize, title);
+        }
 
         return Ok(storyData);
       }
@@ -58,48 +63,26 @@ namespace HackerNews.Controllers
     private async Task<StoryData> BuildStoryDataFromIds(IEnumerable<int> storyIds, int pageIndex, int pageSize, string title)
     {
       var storyData = new StoryData();
-
-      if (storyIds.Any())
-      {        
-        foreach (var id in storyIds)
+   
+      foreach (int id in storyIds)
+      {
+        Story story = null;
+        if (!cache.TryGetValue(id, out story))
         {
-          Story story = null;
-          if (!cache.TryGetValue(id, out story))
-          {
-            story = await GetStoryFromApi(id);
+          story = await GetStoryFromApi(id);
+          cache.Set(id, story, cacheOptions);
+        }
 
-            if (IsValidStory(story))
-            {
-              cache.Set(id, story, cacheOptions);
-            }
-          }
-
+        if (IsValidStory(story))
+        {
           storyData.stories.Add(story);
         }
       }
 
-      if (!string.IsNullOrWhiteSpace(title))
-      {
-        storyData.stories = FilterStories(storyData.stories, title);
-      }
-
+      storyData.stories = FilterStories(storyData.stories, title);
       storyData = TransformStoryData(storyData, pageIndex, pageSize);
-
+      
       return storyData;
-    }
-
-    private StoryData TransformStoryData(StoryData storyData, int pageIndex, int pageSize)
-    {
-      var transformedStoryData = new StoryData();
-
-      transformedStoryData.totalStories = storyData.stories.Count();
-
-      transformedStoryData.stories = storyData.stories
-      .Skip(pageIndex * pageSize)
-      .Take(pageSize)
-      .ToList();
-
-      return transformedStoryData;
     }
 
     private async Task<Story> GetStoryFromApi(int id)
@@ -124,9 +107,28 @@ namespace HackerNews.Controllers
 
     private List<Story> FilterStories(List<Story> stories, string title)
     {
+      if (string.IsNullOrWhiteSpace(title))
+      {
+        return stories;
+      }
+      
       return stories = stories
       .Where(story => story.Title.Contains(title, StringComparison.InvariantCultureIgnoreCase))
       .ToList();
+    }
+
+    private StoryData TransformStoryData(StoryData storyData, int pageIndex, int pageSize)
+    {
+      var transformedStoryData = new StoryData();
+
+      transformedStoryData.totalStories = storyData.stories.Count();
+
+      transformedStoryData.stories = storyData.stories
+      .Skip(pageIndex * pageSize)
+      .Take(pageSize)
+      .ToList();
+
+      return transformedStoryData;
     }
   }
 }

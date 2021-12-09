@@ -14,27 +14,27 @@ export class StoryComponent implements OnInit {
   displayedColumns = ['stories'];
   totalStories = 0;
   pageIndex = 0;
-  pageSize = 10;
-
+  pageSize = 35;
   searchText = '';
-
-  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-
+  isInitLoadCompleted = false;
   isLoading = true;
 
-  constructor(private storyService: StoryService) {}
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  ngOnInit(): void {
+  constructor(private storyService: StoryService) {
     this.storyService
       .getStories(this.pageIndex, this.pageSize)
       .pipe(
         map((storyData: StoryData) => {
           this.dataSource = storyData;
+          this.isInitLoadCompleted = true;
           this.isLoading = false;
         })
       )
       .subscribe();
   }
+
+  ngOnInit(): void {}
 
   onSearchFieldChange(): void {
     this.isLoading = true;

@@ -1,16 +1,12 @@
 :host {
   margin: 0 auto;
+  padding: 5% 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 50%;
   height: 100vh;
-}
-
-#story-title {
-  margin: 0 0 2rem 0;
-  font-size: 3rem;
 }
 
 #loading-container {
@@ -23,7 +19,6 @@
 }
 
 #search-container {
-  margin: 0;
   width: 100%;
 
   mat-form-field {
@@ -35,16 +30,45 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  min-height: 55%;
-  height: 55%;
+  min-height: 100%;
 
   mat-list {
     width: 100%;
     overflow-y: auto;
+    mat-list-item {
+      height: auto;
+    }
   }
 }
 
-#story-container {
+@media (max-width: 768px) {
+  :host {
+    padding: 0 5%;
+    width: 100%;
+    height: 100%;
+  }
 
+  h1 {
+    margin: 0;
+    padding: 0;
+  }
+
+  #loading-container {
+    width: 100%;
+  }
+
+  .list-container {
+    width: 100%;
+    min-height: auto;
+    height: 100%;
+    max-height: 85%;
+
+    mat-list {
+      mat-list-item {
+        height: 36px;
+      }
+    }
+  }
 }
