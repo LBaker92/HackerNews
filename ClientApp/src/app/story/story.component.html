@@ -1,0 +1,46 @@
+<h1 id="story-title">Hacker News Newest Stories</h1>
+  
+<div id="search-container">
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput
+           [(ngModel)]="searchText"
+           [disabled]="isLoading"
+           (change)="onSearchFieldChange()">
+  </mat-form-field>
+</div>
+
+<div class="list-container">
+  <ng-container *ngIf="!isLoading">
+    <mat-list *ngIf="dataSource.totalStories > 0">
+      <mat-list-item *ngFor="let story of dataSource.stories">
+        <a href="{{story.url}}" target="_blank">{{story.title}}</a>
+      </mat-list-item>
+    </mat-list>
+  </ng-container>
+
+  <ng-container *ngIf="isLoading">
+    <div id="loading-container">
+      <h2>Grabbing the latest news...</h2>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading">
+    <mat-paginator [length]="dataSource.totalStories"
+                   [pageSize]="pageSize"
+                   [pageIndex]="pageIndex"
+                   [pageSizeOptions]="[5, 10, 50, 100]"
+                   (page)="onPageChange($event)"
+                   aria-label="Select page"
+                   showFirstLastButtons>
+    </mat-paginator>
+  </ng-container>
+
+</div>
+
+<ng-container *ngIf="!isLoading && dataSource.totalStories === 0">
+  <div id="story-container">
+    <h1><strong>NO RESULTS</strong></h1>
+  </div>
+</ng-container>

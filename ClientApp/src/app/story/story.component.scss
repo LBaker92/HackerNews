@@ -1,0 +1,50 @@
+:host {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100vh;
+}
+
+#story-title {
+  margin: 0 0 2rem 0;
+  font-size: 3rem;
+}
+
+#loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+}
+
+#search-container {
+  margin: 0;
+  width: 100%;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 55%;
+  height: 55%;
+
+  mat-list {
+    width: 100%;
+    overflow-y: auto;
+  }
+}
+
+#story-container {
+
+}
