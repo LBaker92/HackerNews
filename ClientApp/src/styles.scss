@@ -1,13 +1,14 @@
-body, html, app-story {
+* {
   margin: 0;
   padding: 0;
-  height: 100vh;
-}
-
-* {
   box-sizing: border-box;
 }
 
+html {
+  height: 100vh;
+}
+
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%; 
 }

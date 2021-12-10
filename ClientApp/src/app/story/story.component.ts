@@ -14,7 +14,7 @@ export class StoryComponent implements OnInit {
   displayedColumns = ['stories'];
   totalStories = 0;
   pageIndex = 0;
-  pageSize = 30;
+  pageSize = 25;
   searchText = '';
   isInitLoadCompleted = false;
   isLoading = true;
