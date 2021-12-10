@@ -10,28 +10,31 @@
 </div>
 
 <div id="story-container">
-  <ng-container *ngIf="!isInitLoadCompleted">
-    <div id="loading-container">
-      <h1>Grabbing the latest news...</h1>
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    </div>
-  </ng-container>
-
-    <mat-list *ngIf="isInitLoadCompleted && dataSource.totalStories > 0">
-      <mat-list-item *ngFor="let story of dataSource.stories">
-        <a href="{{story.url}}" target="_blank">{{story.title}}</a>
-      </mat-list-item>
-    </mat-list>
-
-    <ng-container *ngIf="isInitLoadCompleted && dataSource.totalStories === 0">
-      <h3>No results</h3>
-    </ng-container>
+  <span *ngIf="searchText">{{dataSource.totalStories}} results</span>
+    
+  <mat-list *ngIf="isInitLoadCompleted && dataSource.totalStories > 0">
+    <mat-list-item *ngFor="let story of dataSource.stories">
+      <a href="{{story.url}}" target="_blank">{{story.title}}</a>
+    </mat-list-item>
+  </mat-list>
 </div>
 
 <div id="paginator-container">
-<ng-container *ngIf="isInitLoadCompleted">
-  <mat-paginator [length]="dataSource.totalStories" [pageSize]="pageSize" [pageIndex]="pageIndex"
-    [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)" aria-label="Select page" showFirstLastButtons>
-  </mat-paginator>
-</ng-container>
+  <ng-container *ngIf="isInitLoadCompleted">
+    <mat-paginator [length]="dataSource.totalStories"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[10, 25, 50, 100]"
+    (page)="onPageChange($event)"
+    aria-label="Select page"
+    showFirstLastButtons>
+    </mat-paginator>
+  </ng-container>
 </div>
+
+<ng-container *ngIf="!isInitLoadCompleted">
+  <div id="loading-container">
+    <h2>Loading stories</h2>
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+</ng-container>

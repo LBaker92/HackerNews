@@ -26,7 +26,7 @@ namespace HackerNews.Controllers
       cacheOptions = new MemoryCacheEntryOptions()
       {
         AbsoluteExpiration = DateTime.Now.AddMinutes(10),
-        Size = 1024
+        Size = 1
       };
     }
 
