@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "HackerNews/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.SpaProxy": "6.0.0-rc.2.21480.10"
+        },
+        "runtime": {
+          "HackerNews.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.SpaProxy/6.0.0-rc.2.21480.10": {
+        "runtime": {
+          "lib/net6.0/Microsoft.AspNetCore.SpaProxy.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.48010"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HackerNews/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNetCore.SpaProxy/6.0.0-rc.2.21480.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ya4tCqxQ+kou/IR+DkNOIjMDYDNz6vZu2IQH6ElimS9oP8didSN0r2C+4FSSycT9ycmEkAtCrmNdiHBtbs+TxA==",
+      "path": "microsoft.aspnetcore.spaproxy/6.0.0-rc.2.21480.10",
+      "hashPath": "microsoft.aspnetcore.spaproxy.6.0.0-rc.2.21480.10.nupkg.sha512"
+    }
+  }
+}
