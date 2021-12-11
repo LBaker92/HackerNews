@@ -14,9 +14,9 @@ export class StoryComponent implements OnInit {
   displayedColumns = ['stories'];
   totalStories = 0;
   pageIndex = 0;
-  pageSize = 30;
+  pageSize = 15;
   searchText = '';
-  isInitLoadCompleted = false;
+  prevSearchText = '';
   isLoading = true;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -30,7 +30,6 @@ export class StoryComponent implements OnInit {
       .subscribe(
         (response: StoryData) => {
           this.dataSource = response;
-          this.isInitLoadCompleted = true;
           this.isLoading = false;
         },
         (error: StoryData) => {
@@ -44,8 +43,13 @@ export class StoryComponent implements OnInit {
   ngOnInit(): void {}
 
   onSearchFieldChange(): void {
+    if (!this.prevSearchText && !this.searchText) { // Prevent making calls when search bar is empty.
+      return;
+    }
+
     this.isLoading = true;
 
+    this.prevSearchText = this.searchText;
     this.pageIndex = 0;
     this.paginator.pageIndex = 0;
 
@@ -54,7 +58,6 @@ export class StoryComponent implements OnInit {
       .subscribe(
         (response: StoryData) => {
           this.dataSource = response;
-          this.isInitLoadCompleted = true;
           this.isLoading = false;
         },
         (error: StoryData) => {
@@ -76,7 +79,6 @@ export class StoryComponent implements OnInit {
       .subscribe(
         (response: StoryData) => {
           this.dataSource = response;
-          this.isInitLoadCompleted = true;
           this.isLoading = false;
         },
         (error: StoryData) => {

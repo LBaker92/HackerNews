@@ -26,7 +26,7 @@ namespace HackerNews.Controllers
       cacheOptions = new MemoryCacheEntryOptions()
       {
         AbsoluteExpiration = DateTime.Now.AddMinutes(10),
-        Size = 1024
+        Size = 1
       };
     }
 
@@ -48,11 +48,15 @@ namespace HackerNews.Controllers
 
         IEnumerable<int> storyIds = JsonSerializer.Deserialize<IEnumerable<int>>(await response.Content.ReadAsStringAsync());
 
-        storyData = await BuildStoryDataFromIds(storyIds, pageIndex, pageSize, title);
+        storyData = await BuildStoryDataFromIds(storyIds);
 
-        if (!IsPageIndexValid(pageIndex, pageSize, storyData.Stories.Count()))
+        storyData.Stories = storyData.Stories
+          .Where(story => IsValidStory(story))
+          .ToList();
+
+        if (!IsPageIndexValid(pageIndex, pageSize, storyData.Stories.Count))
         {
-          storyData.Stories = new List<Story>();
+          storyData = new StoryData();
           storyData.Errors.Add("Requested page index doesn't exist.");
           return BadRequest(storyData);
         }
@@ -68,29 +72,25 @@ namespace HackerNews.Controllers
       }
     }
 
-    private async Task<StoryData> BuildStoryDataFromIds(IEnumerable<int> storyIds, int pageIndex, int pageSize, string title)
+    private static async Task<StoryData> BuildStoryDataFromIds(IEnumerable<int> storyIds)
     {
       var storyData = new StoryData();
    
       foreach (int id in storyIds)
       {
-        Story story;
-        if (!cache.TryGetValue(id, out story))
+        if (!cache.TryGetValue(id, out Story story))
         {
           story = await GetStoryFromApi(id);
           cache.Set(id, story, cacheOptions);
         }
 
-        if (IsValidStory(story))
-        {
-          storyData.Stories.Add(story);
-        }
+        storyData.Stories.Add(story);
       }
 
       return storyData;
     }
 
-    private async Task<Story> GetStoryFromApi(int id)
+    private static async Task<Story> GetStoryFromApi(int id)
     {
       HttpResponseMessage response = await client.GetAsync($"{storyItemBaseUrl}{id}.json");
       response.EnsureSuccessStatusCode();
@@ -100,7 +100,7 @@ namespace HackerNews.Controllers
       return story;
     }
 
-    private bool IsValidStory(Story story)
+    private static bool IsValidStory(Story story)
     {
       if (string.IsNullOrWhiteSpace(story.Title) || string.IsNullOrWhiteSpace(story.Url))
       {
@@ -110,18 +110,20 @@ namespace HackerNews.Controllers
       return true;
     }
 
-    private bool IsPageIndexValid(int pageIndex, int pageSize, int totalStoriesCount)
+    private static bool IsPageIndexValid(int pageIndex, int pageSize, int totalStoriesCount)
     {
       int totalPages = totalStoriesCount / pageSize;
       return pageIndex <= totalPages;
     }
 
-    private StoryData TransformStoryData(StoryData storyData, int pageIndex, int pageSize, string? title = "")
+    private static StoryData TransformStoryData(StoryData storyData, int pageIndex, int pageSize, string? title = "")
     {
-      var transformedStoryData = new StoryData();
+      var transformedStoryData = new StoryData
+      {
+        Stories = FilterStories(storyData.Stories, title)
+      };
 
-      transformedStoryData.Stories = FilterStories(storyData.Stories, title);
-      transformedStoryData.TotalStories = transformedStoryData.Stories.Count();
+      transformedStoryData.TotalStories = transformedStoryData.Stories.Count;
       transformedStoryData.Stories = transformedStoryData.Stories
       .Skip(pageIndex * pageSize)
       .Take(pageSize)
@@ -130,7 +132,7 @@ namespace HackerNews.Controllers
       return transformedStoryData;
     }
 
-    private List<Story> FilterStories(List<Story> stories, string title)
+    private static List<Story> FilterStories(List<Story> stories, string title)
     {
       if (string.IsNullOrWhiteSpace(title))
       {
@@ -138,7 +140,7 @@ namespace HackerNews.Controllers
       }
       
       return stories = stories
-      .Where(story => story.Title.Contains(title, StringComparison.InvariantCultureIgnoreCase))
+      .Where(story => story.Title.StartsWith(title, StringComparison.InvariantCultureIgnoreCase))
       .ToList();
     }
   }

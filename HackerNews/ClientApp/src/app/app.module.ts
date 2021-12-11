@@ -17,16 +17,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ErrorInterceptor } from './utilities/error-interceptor';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
-  declarations: [AppComponent, StoryComponent],
+  declarations: [AppComponent, StoryComponent, NotFoundComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', redirectTo: 'stories', pathMatch: 'full' },
       { path: 'stories', component: StoryComponent, pathMatch: 'full' },
+      { path: '', redirectTo: 'stories', pathMatch: 'full' },
+      { path: 'not-found', component: NotFoundComponent, pathMatch: 'full' },
+      { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
     ]),
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
