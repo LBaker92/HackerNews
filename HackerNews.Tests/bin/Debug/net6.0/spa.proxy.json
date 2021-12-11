@@ -1,8 +1,0 @@
-{
-"SpaProxyServer": {
-"ServerUrl": "http://localhost:44416",
-"LaunchCommand": "npm start",
-"WorkingDirectory": "C:\\Users\\Zenrion\\Documents\\GitHub\\node_projects\\HackerNews\\HackerNews\\ClientApp\\",
-"MaxTimeoutInSeconds": "120"
-}
-}
