@@ -16,7 +16,7 @@ using Xunit;
 
 namespace HackerNews.Tests.Controllers
 {
-  public class StoriesControllerTests
+  public class StoriesControllerUnitTests
   {
     [Theory]
     [InlineData(-1, -1)]
