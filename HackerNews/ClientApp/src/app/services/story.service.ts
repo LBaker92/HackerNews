@@ -7,7 +7,7 @@ import { StoryData } from '../models/story-data';
   providedIn: 'root',
 })
 export class StoryService {
-  baseUrl = 'http://localhost:5050/api/stories'; // Should probably pull this from a config somewhere.
+  baseUrl = 'http://localhost:5050/api/stories';
 
   constructor(private client: HttpClient) {}
 

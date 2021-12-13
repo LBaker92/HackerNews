@@ -11,19 +11,19 @@ namespace HackerNews.Controllers
   [ApiController]
   public class StoriesController : ControllerBase
   {
-    private static HttpClient client;
-    private static IMemoryCache cache;
-    private static MemoryCacheEntryOptions cacheOptions;
+    private static HttpClient Client;
+    private static IMemoryCache Cache;
+    private static MemoryCacheEntryOptions CacheOptions;
 
-    private static readonly string newestStoriesBaseUrl = "https://hacker-news.firebaseio.com/v0/topstories.json";
-    private static readonly string storyItemBaseUrl = "https://hacker-news.firebaseio.com/v0/item/";
+    private static readonly string NewestStoriesBaseUrl = "https://hacker-news.firebaseio.com/v0/topstories.json";
+    private static readonly string StoryItemBaseUrl = "https://hacker-news.firebaseio.com/v0/item/";
 
     public StoriesController(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache)
     {
-      client = httpClientFactory.CreateClient();
-      cache = memoryCache;
+      Client = httpClientFactory.CreateClient();
+      Cache = memoryCache;
 
-      cacheOptions = new MemoryCacheEntryOptions()
+      CacheOptions = new MemoryCacheEntryOptions()
       {
         AbsoluteExpiration = DateTime.Now.AddMinutes(10),
         Size = 1
@@ -41,7 +41,7 @@ namespace HackerNews.Controllers
         return BadRequest(storyData);
       }
 
-      HttpResponseMessage response = await client.GetAsync(newestStoriesBaseUrl);
+      HttpResponseMessage response = await Client.GetAsync(NewestStoriesBaseUrl);
       try
       {
         response.EnsureSuccessStatusCode();
@@ -78,10 +78,10 @@ namespace HackerNews.Controllers
    
       foreach (int id in storyIds)
       {
-        if (!cache.TryGetValue(id, out Story story))
+        if (!Cache.TryGetValue(id, out Story story))
         {
           story = await GetStoryFromApi(id);
-          cache.Set(id, story, cacheOptions);
+          Cache.Set(id, story, CacheOptions);
         }
 
         storyData.Stories.Add(story);
@@ -92,7 +92,7 @@ namespace HackerNews.Controllers
 
     private static async Task<Story> GetStoryFromApi(int id)
     {
-      HttpResponseMessage response = await client.GetAsync($"{storyItemBaseUrl}{id}.json");
+      HttpResponseMessage response = await Client.GetAsync($"{StoryItemBaseUrl}{id}.json");
       response.EnsureSuccessStatusCode();
 
       Story story = JsonSerializer.Deserialize<Story>(await response.Content.ReadAsStringAsync());
