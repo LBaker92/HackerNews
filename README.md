@@ -7,8 +7,7 @@ A project using Angular 13 and a .NET Core 6 Web Api to grab the latest stories 
 - Contains back-end unit and integration tests.
 
 ## Important Notes
-- .NET Core 6 does not currently play well with Angular 13. That is, opening this project in Visual Studio will display a lot of errors.  
-  This is a known issue and it is being worked on.
+- .NET Core 6 displays a lot of error messages regarding Angular 13 files. This is a known issue and can be ignored.
 
 ## How to Run
 ### Visual Studio Code
