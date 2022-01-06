@@ -1,5 +1,8 @@
 # HackerNews
 
+![image](https://user-images.githubusercontent.com/29757705/148315753-00ce106a-618d-4165-a33c-50e5fe2e45e7.png)
+
+
 A project using Angular 13 and a .NET Core 6 Web Api to grab the latest stories from Hacker News and display them in a paginated list.
 
 ## Key Features
